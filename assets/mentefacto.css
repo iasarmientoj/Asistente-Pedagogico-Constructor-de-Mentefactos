@@ -1,0 +1,783 @@
+/*!
+ * Asistente Pedagogico - Constructor de Mentefactos
+ * Version 1.0.0
+ *
+ * REGLA DE ORO: absolutamente todos los selectores empiezan por #mentefacto-app.
+ * El sitio de SIEPSI usa el tema "extremestore" + WPBakery, que inyectan mucho CSS
+ * global. Sin este aislamiento, el dia de la migracion el tema nos desarma el diseno.
+ * Tampoco se define aqui ninguna regla para body, html o etiquetas sueltas.
+ */
+
+/* ==========================================================================
+   1. VARIABLES Y BLINDAJE CONTRA EL TEMA
+   ========================================================================== */
+
+#mentefacto-app {
+  --mf-navy: #09364d;   /* medido del header real de siepsi.com.co */
+  --mf-navy-2: #17546b;
+  --mf-verde: #7ac142;
+  --mf-verde-o: #5c9a2e;
+  --mf-verde-cl: #eef7e6;
+  --mf-txt: #1d2b32;
+  --mf-txt-2: #5b6b73;
+  --mf-txt-3: #8697a0;
+  --mf-bor: #dde5e8;
+  --mf-bor-2: #eef2f4;
+  --mf-bg: #f4f7f8;
+  --mf-blanco: #ffffff;
+  --mf-amb: #8a6116;
+  --mf-amb-bg: #fff6e0;
+  --mf-amb-bor: #f0d79a;
+  --mf-rojo: #b3261e;
+  --mf-rojo-bg: #fdecea;
+  --mf-r: 0;          /* esquinas rectas: es el estilo de SIEPSI */
+  --mf-r-sm: 0;
+  --mf-sombra: 0 1px 2px rgba(15, 59, 77, .05), 0 8px 24px rgba(15, 59, 77, .07);
+  --mf-fuente: "Lato", "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mf-titulos: "Raleway", "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+
+  font-family: var(--mf-fuente);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--mf-txt);
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+  display: block;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+#mentefacto-app,
+#mentefacto-app *,
+#mentefacto-app *::before,
+#mentefacto-app *::after { box-sizing: border-box; }
+
+#mentefacto-app h2, #mentefacto-app h3, #mentefacto-app h4,
+#mentefacto-app p, #mentefacto-app ul, #mentefacto-app ol,
+#mentefacto-app li, #mentefacto-app label, #mentefacto-app div,
+#mentefacto-app span, #mentefacto-app b, #mentefacto-app details,
+#mentefacto-app summary, #mentefacto-app section, #mentefacto-app header {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-transform: none;
+  letter-spacing: normal;
+  list-style: none;
+  text-align: inherit;
+  float: none;
+  text-shadow: none;
+}
+
+#mentefacto-app button,
+#mentefacto-app input,
+#mentefacto-app select {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+  border: 0;
+  background: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+  line-height: 1.3;
+  width: auto;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  outline: none;
+}
+
+#mentefacto-app button { cursor: pointer; }
+#mentefacto-app button:disabled { cursor: not-allowed; }
+
+#mentefacto-app a {
+  color: var(--mf-navy-2);
+  text-decoration: underline;
+  box-shadow: none;
+  border: 0;
+}
+
+/* Los titulos van en Raleway, como los del sitio; el cuerpo en Lato. */
+#mentefacto-app h2, #mentefacto-app h3, #mentefacto-app h4 { font-family: var(--mf-titulos); }
+
+#mentefacto-app svg { max-width: 100%; height: auto; display: block; }
+#mentefacto-app .mf-oculto { display: none !important; }
+
+/* ==========================================================================
+   2. ESTRUCTURA
+   ========================================================================== */
+
+#mentefacto-app .mf-shell {
+  background: var(--mf-bg);
+  border: 1px solid var(--mf-bor);
+  border-radius: var(--mf-r);
+  overflow: hidden;
+}
+
+#mentefacto-app .mf-head {
+  background: var(--mf-navy);
+  color: #fff;
+  padding: 18px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid var(--mf-verde);
+}
+
+#mentefacto-app .mf-h-tit {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--mf-verde);
+}
+#mentefacto-app .mf-h-nom {
+  font-family: var(--mf-titulos);
+  font-size: 21px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-top: 3px;
+}
+#mentefacto-app .mf-h-sub { font-size: 12.5px; color: #a8c4d0; margin-top: 3px; }
+#mentefacto-app .mf-h-acc { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Sin título interno: la barra queda como una fila de acciones. */
+#mentefacto-app .mf-head-solo { justify-content: flex-end; padding: 13px 22px; }
+
+#mentefacto-app .mf-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  gap: 0;
+  align-items: start;
+}
+
+#mentefacto-app .mf-col-edit {
+  padding: 20px 22px 22px;
+  border-right: 1px solid var(--mf-bor);
+  min-width: 0;
+}
+
+#mentefacto-app .mf-col-prev {
+  padding: 20px 22px 22px;
+  min-width: 0;
+  position: sticky;
+  top: 12px;
+}
+
+/* ==========================================================================
+   3. BOTONES
+   ========================================================================== */
+
+#mentefacto-app .mf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: var(--mf-r-sm);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease, transform .06s ease;
+  white-space: nowrap;
+}
+#mentefacto-app .mf-btn:active { transform: translateY(1px); }
+#mentefacto-app .mf-btn:focus-visible { outline: 3px solid rgba(122, 193, 66, .55); outline-offset: 2px; }
+
+#mentefacto-app .mf-btn-pri {
+  background: var(--mf-verde);
+  color: #10331a;
+  border-color: var(--mf-verde-o);
+}
+#mentefacto-app .mf-btn-pri:hover { background: var(--mf-verde-o); color: #fff; }
+
+#mentefacto-app .mf-btn-sec {
+  background: var(--mf-blanco);
+  color: var(--mf-navy);
+  border-color: var(--mf-bor);
+}
+#mentefacto-app .mf-btn-sec:hover { border-color: var(--mf-navy-2); background: #f7fbfc; }
+#mentefacto-app .mf-btn-sec:disabled { color: var(--mf-txt-3); background: var(--mf-bor-2); border-color: var(--mf-bor); }
+
+#mentefacto-app .mf-btn-fant {
+  background: rgba(255, 255, 255, .1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, .3);
+  padding: 8px 13px;
+  font-size: 13px;
+}
+#mentefacto-app .mf-btn-fant:hover { background: rgba(255, 255, 255, .2); }
+
+#mentefacto-app .mf-btn-sm { padding: 7px 12px; font-size: 13px; }
+#mentefacto-app .mf-btn-ancho { width: 100%; }
+
+/* ==========================================================================
+   4. RIEL DE PASOS
+   ========================================================================== */
+
+#mentefacto-app .mf-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--mf-bor);
+}
+
+#mentefacto-app .mf-rail-i button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px 6px 6px;
+  border-radius: 0;
+  color: var(--mf-txt-2);
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+#mentefacto-app .mf-rail-i button:hover { background: var(--mf-bor-2); }
+
+#mentefacto-app .mf-rail-n {
+  width: 22px; height: 22px;
+  border-radius: 0;
+  background: var(--mf-bor);
+  color: var(--mf-txt-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+#mentefacto-app .mf-rail-act button {
+  background: var(--mf-navy);
+  color: #fff;
+  border-color: var(--mf-navy);
+}
+#mentefacto-app .mf-rail-act .mf-rail-n { background: var(--mf-verde); color: #10331a; }
+
+#mentefacto-app .mf-rail-ok button { color: var(--mf-verde-o); }
+#mentefacto-app .mf-rail-ok .mf-rail-n { background: var(--mf-verde-cl); color: var(--mf-verde-o); }
+
+/* ==========================================================================
+   5. PANEL DEL PASO
+   ========================================================================== */
+
+#mentefacto-app .mf-paso-et {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--mf-verde-o);
+  margin-bottom: 5px;
+}
+#mentefacto-app .mf-paso-cab h3 { font-size: 19px; font-weight: 700; color: var(--mf-navy); letter-spacing: 0; }
+
+#mentefacto-app .mf-preg {
+  font-size: 16.5px;
+  line-height: 1.5;
+  color: var(--mf-txt);
+  margin: 12px 0 10px;
+}
+#mentefacto-app .mf-var {
+  font-weight: 700;
+  color: var(--mf-navy);
+  background: var(--mf-verde-cl);
+  padding: 1px 6px;
+  border-radius: 5px;
+}
+
+#mentefacto-app .mf-ayuda {
+  background: var(--mf-blanco);
+  border: 1px solid var(--mf-bor);
+  border-radius: var(--mf-r-sm);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+#mentefacto-app .mf-ayuda summary {
+  cursor: pointer;
+  padding: 9px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--mf-navy-2);
+  list-style: none;
+}
+#mentefacto-app .mf-ayuda summary::-webkit-details-marker { display: none; }
+#mentefacto-app .mf-ayuda summary::before { content: "? "; font-weight: 700; }
+#mentefacto-app .mf-ayuda[open] summary { border-bottom: 1px solid var(--mf-bor-2); }
+#mentefacto-app .mf-ayuda > div {
+  padding: 11px 14px 13px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--mf-txt-2);
+}
+#mentefacto-app .mf-ayuda b { font-weight: 700; color: var(--mf-txt); }
+#mentefacto-app .mf-ayuda i { font-style: italic; }
+
+/* Recordatorio contextual: el corazon pedagogico de la herramienta */
+#mentefacto-app .mf-record {
+  background: var(--mf-verde-cl);
+  border-left: 4px solid var(--mf-verde);
+  border-radius: 0 var(--mf-r-sm) var(--mf-r-sm) 0;
+  padding: 11px 15px;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+#mentefacto-app .mf-record-et {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--mf-verde-o);
+  margin-bottom: 2px;
+}
+#mentefacto-app .mf-record > b { font-size: 16px; font-weight: 700; color: var(--mf-navy); }
+#mentefacto-app .mf-record p { margin-top: 4px; color: var(--mf-txt-2); line-height: 1.5; }
+#mentefacto-app .mf-record p b { color: var(--mf-navy); font-weight: 700; }
+
+#mentefacto-app .mf-record-warn {
+  background: var(--mf-amb-bg);
+  border-left-color: #e0a93c;
+}
+#mentefacto-app .mf-record-warn > b { color: var(--mf-amb); }
+
+#mentefacto-app .mf-enlace {
+  color: var(--mf-navy-2);
+  text-decoration: underline;
+  font-weight: 600;
+  padding: 0;
+}
+
+/* ==========================================================================
+   6. CAMPOS
+   ========================================================================== */
+
+#mentefacto-app .mf-input {
+  display: block;
+  width: 100%;
+  padding: 11px 13px;
+  background: var(--mf-blanco);
+  border: 1px solid var(--mf-bor);
+  border-radius: var(--mf-r-sm);
+  font-size: 15px;
+  color: var(--mf-txt);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+#mentefacto-app .mf-input::placeholder { color: var(--mf-txt-3); opacity: 1; }
+#mentefacto-app .mf-input:focus {
+  border-color: var(--mf-verde-o);
+  box-shadow: 0 0 0 3px rgba(122, 193, 66, .22);
+}
+#mentefacto-app .mf-input-gr { font-size: 17px; padding: 13px 15px; font-weight: 600; }
+
+#mentefacto-app .mf-lista { display: flex; flex-direction: column; gap: 8px; }
+
+#mentefacto-app .mf-item { display: flex; align-items: flex-start; gap: 9px; }
+#mentefacto-app .mf-item-c { flex: 1 1 auto; min-width: 0; }
+#mentefacto-app .mf-item-n {
+  flex: 0 0 auto;
+  width: 22px; height: 22px;
+  margin-top: 11px;
+  border-radius: 0;
+  background: var(--mf-bor-2);
+  color: var(--mf-txt-3);
+  font-size: 11.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#mentefacto-app .mf-quitar {
+  flex: 0 0 auto;
+  width: 30px; height: 30px;
+  margin-top: 7px;
+  border-radius: 0;
+  color: var(--mf-txt-3);
+  font-size: 19px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+#mentefacto-app .mf-quitar:hover:not(:disabled) { background: var(--mf-rojo-bg); color: var(--mf-rojo); }
+#mentefacto-app .mf-quitar:disabled { opacity: .3; }
+
+#mentefacto-app .mf-item-av:empty { display: none; }
+#mentefacto-app .mf-item-av { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 5px; }
+#mentefacto-app .mf-av {
+  display: inline-block;
+  background: var(--mf-amb-bg);
+  border: 1px solid var(--mf-amb-bor);
+  color: var(--mf-amb);
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 3px 9px;
+  border-radius: 0;
+}
+
+#mentefacto-app .mf-lista-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+#mentefacto-app .mf-cont { font-size: 12.5px; color: var(--mf-txt-3); font-weight: 600; }
+#mentefacto-app .mf-cont-ok { color: var(--mf-verde-o); }
+
+#mentefacto-app .mf-campo { margin-bottom: 4px; }
+
+#mentefacto-app .mf-lbl {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mf-txt-2);
+  margin-bottom: 10px;
+}
+#mentefacto-app .mf-lbl .mf-input { margin-top: 5px; font-weight: 400; font-size: 14px; }
+
+/* ==========================================================================
+   7. NAVEGACION INFERIOR
+   ========================================================================== */
+
+#mentefacto-app .mf-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--mf-bor);
+}
+#mentefacto-app .mf-nav-pos { font-size: 12.5px; color: var(--mf-txt-3); font-weight: 600; }
+
+/* ==========================================================================
+   8. VISTA PREVIA
+   ========================================================================== */
+
+#mentefacto-app .mf-prev-barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+#mentefacto-app .mf-prev-tit {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--mf-txt-3);
+}
+#mentefacto-app .mf-tema-lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--mf-txt-2);
+}
+#mentefacto-app .mf-select {
+  padding: 6px 26px 6px 10px;
+  border: 1px solid var(--mf-bor);
+  border-radius: var(--mf-r-sm);
+  background: var(--mf-blanco) url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235b6b73'/%3E%3C/svg%3E") no-repeat right 9px center;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#mentefacto-app .mf-lienzo {
+  background: var(--mf-blanco);
+  border: 1px solid var(--mf-bor);
+  border-radius: var(--mf-r);
+  padding: 10px;
+  box-shadow: var(--mf-sombra);
+  overflow: hidden;
+}
+#mentefacto-app .mf-svg-caja { overflow-x: auto; }
+#mentefacto-app .mf-svg-caja svg { min-width: 560px; }
+
+#mentefacto-app .mf-vacio {
+  padding: 54px 26px;
+  text-align: center;
+  color: var(--mf-txt-3);
+  font-size: 14px;
+  line-height: 1.6;
+}
+#mentefacto-app .mf-vacio b { color: var(--mf-txt-2); font-size: 15px; }
+#mentefacto-app .mf-vacio p + p { margin-top: 7px; }
+
+#mentefacto-app .mf-exp { margin-top: 14px; }
+#mentefacto-app .mf-exp-fila { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+#mentefacto-app .mf-exp-nota { margin-top: 9px; font-size: 12px; line-height: 1.5; color: var(--mf-txt-3); }
+#mentefacto-app .mf-exp-nota b { font-weight: 700; color: var(--mf-txt-2); }
+
+/* ==========================================================================
+   9. RUBRICA
+   ========================================================================== */
+
+#mentefacto-app .mf-rub {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--mf-blanco);
+  border: 1px solid var(--mf-bor);
+  border-radius: var(--mf-r);
+  padding: 16px 18px;
+  margin-bottom: 8px;
+}
+
+#mentefacto-app .mf-rub-total {
+  flex: 0 0 auto;
+  width: 84px;
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: var(--mf-r-sm);
+}
+#mentefacto-app .mf-rub-total b { display: block; font-size: 30px; font-weight: 700; line-height: 1.05; }
+#mentefacto-app .mf-rub-total span { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+
+#mentefacto-app .mf-niv-exc { background: var(--mf-verde-cl); color: var(--mf-verde-o); }
+#mentefacto-app .mf-niv-bue { background: #e7f2f7; color: var(--mf-navy-2); }
+#mentefacto-app .mf-niv-ace { background: var(--mf-amb-bg); color: var(--mf-amb); }
+#mentefacto-app .mf-niv-con { background: var(--mf-bor-2); color: var(--mf-txt-2); }
+
+#mentefacto-app .mf-rub-barras { flex: 1 1 auto; min-width: 0; }
+#mentefacto-app .mf-rub-fila + .mf-rub-fila { margin-top: 9px; }
+#mentefacto-app .mf-rub-cab {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--mf-txt-2);
+  margin-bottom: 3px;
+}
+#mentefacto-app .mf-rub-cab b { font-weight: 700; color: var(--mf-txt); }
+#mentefacto-app .mf-barra { height: 7px; background: var(--mf-bor-2); border-radius: 0; overflow: hidden; }
+#mentefacto-app .mf-barra i { display: block; height: 100%; border-radius: 0; transition: width .3s ease; }
+#mentefacto-app .mf-b-ok { background: var(--mf-verde); }
+#mentefacto-app .mf-b-med { background: #e0a93c; }
+#mentefacto-app .mf-b-baja { background: #d9736a; }
+
+#mentefacto-app .mf-rub-nota { font-size: 11.5px; color: var(--mf-txt-3); margin-bottom: 16px; line-height: 1.5; }
+
+#mentefacto-app .mf-sug {
+  background: var(--mf-blanco);
+  border: 1px solid var(--mf-bor);
+  border-radius: var(--mf-r);
+  padding: 15px 18px;
+  margin-bottom: 16px;
+}
+#mentefacto-app .mf-sug h4 { font-size: 15px; font-weight: 700; color: var(--mf-navy); margin-bottom: 10px; }
+#mentefacto-app .mf-sug-ok { background: var(--mf-verde-cl); border-color: #cfe7b8; }
+#mentefacto-app .mf-sug-ok h4 { color: var(--mf-verde-o); }
+#mentefacto-app .mf-sug-ok p { font-size: 13.5px; color: var(--mf-txt-2); line-height: 1.55; }
+
+#mentefacto-app .mf-sug-g + .mf-sug-g { margin-top: 12px; }
+#mentefacto-app .mf-sug-et {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  padding: 2px 8px;
+  border-radius: 0;
+  margin-bottom: 5px;
+}
+#mentefacto-app .mf-et-estructura { background: #e7f2f7; color: var(--mf-navy-2); }
+#mentefacto-app .mf-et-pertinencia { background: var(--mf-amb-bg); color: var(--mf-amb); }
+#mentefacto-app .mf-et-claridad { background: #f0ebf7; color: #6b4c9a; }
+
+#mentefacto-app .mf-sug-g ul li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--mf-txt-2);
+}
+#mentefacto-app .mf-sug-g ul li + li { margin-top: 4px; }
+#mentefacto-app .mf-sug-g ul li::before {
+  content: "";
+  position: absolute;
+  left: 3px; top: 8px;
+  width: 5px; height: 5px;
+  background: var(--mf-txt-3);
+}
+
+#mentefacto-app .mf-meta {
+  background: var(--mf-blanco);
+  border: 1px solid var(--mf-bor);
+  border-radius: var(--mf-r);
+  padding: 15px 18px;
+  margin-bottom: 16px;
+}
+#mentefacto-app .mf-meta h4 { font-size: 15px; font-weight: 700; color: var(--mf-navy); margin-bottom: 11px; }
+#mentefacto-app .mf-opc {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--mf-txt-3);
+  background: var(--mf-bor-2);
+  padding: 2px 7px;
+  border-radius: 0;
+  margin-left: 5px;
+}
+
+#mentefacto-app .mf-cta {
+  background: var(--mf-navy);
+  border-radius: var(--mf-r);
+  padding: 18px 20px;
+  color: #fff;
+}
+#mentefacto-app .mf-cta h4 { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
+#mentefacto-app .mf-cta p { font-size: 13.5px; line-height: 1.55; color: #b7d0da; margin-bottom: 13px; }
+#mentefacto-app .mf-cta .mf-btn { text-decoration: none; }
+
+/* ==========================================================================
+   10. AVISOS FLOTANTES
+   ========================================================================== */
+
+#mentefacto-app .mf-avisos:empty { display: none; }
+#mentefacto-app .mf-avisos { padding: 12px 22px 0; }
+#mentefacto-app .mf-flash {
+  background: #e7f2f7;
+  border: 1px solid #bcd9e5;
+  color: var(--mf-navy);
+  border-radius: var(--mf-r-sm);
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  transition: opacity .35s ease, transform .35s ease;
+}
+#mentefacto-app .mf-flash + .mf-flash { margin-top: 7px; }
+#mentefacto-app .mf-flash-err { background: var(--mf-rojo-bg); border-color: #f3c2bd; color: var(--mf-rojo); }
+#mentefacto-app .mf-flash-fuera { opacity: 0; transform: translateY(-6px); }
+#mentefacto-app .mf-flash a { color: inherit; font-weight: 700; }
+
+/* ==========================================================================
+   11. MODAL
+   ========================================================================== */
+
+#mentefacto-app .mf-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15, 59, 77, .55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#mentefacto-app .mf-modal-caja {
+  background: var(--mf-blanco);
+  border-radius: var(--mf-r);
+  width: 100%;
+  max-width: 470px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
+}
+#mentefacto-app .mf-modal-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--mf-bor);
+}
+#mentefacto-app .mf-modal-cab h3 { font-size: 16px; font-weight: 700; color: var(--mf-navy); }
+#mentefacto-app .mf-x {
+  width: 30px; height: 30px;
+  border-radius: 0;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--mf-txt-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+#mentefacto-app .mf-x:hover { background: var(--mf-bor-2); color: var(--mf-txt); }
+#mentefacto-app .mf-modal-cuerpo { padding: 16px 18px 18px; }
+#mentefacto-app .mf-modal-int { font-size: 13px; color: var(--mf-txt-2); margin-bottom: 13px; line-height: 1.5; }
+
+#mentefacto-app .mf-ej {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border: 1px solid var(--mf-bor);
+  border-radius: var(--mf-r-sm);
+  background: var(--mf-blanco);
+  transition: border-color .15s ease, background-color .15s ease;
+}
+#mentefacto-app .mf-ej + .mf-ej { margin-top: 8px; }
+#mentefacto-app .mf-ej:hover { border-color: var(--mf-verde-o); background: var(--mf-verde-cl); }
+#mentefacto-app .mf-ej b { display: block; font-size: 14.5px; font-weight: 700; color: var(--mf-navy); }
+#mentefacto-app .mf-ej span { display: block; font-size: 12.5px; color: var(--mf-txt-2); margin-top: 2px; line-height: 1.45; }
+
+/* ==========================================================================
+   12. RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 980px) {
+  #mentefacto-app .mf-grid { grid-template-columns: minmax(0, 1fr); }
+  #mentefacto-app .mf-col-edit { border-right: 0; border-bottom: 1px solid var(--mf-bor); }
+  #mentefacto-app .mf-col-prev { position: static; }
+}
+
+@media (max-width: 620px) {
+  #mentefacto-app { font-size: 15px; }
+  #mentefacto-app .mf-head { padding: 15px 16px; }
+  #mentefacto-app .mf-h-acc { width: 100%; }
+  #mentefacto-app .mf-h-acc .mf-btn { flex: 1 1 auto; }
+  #mentefacto-app .mf-col-edit,
+  #mentefacto-app .mf-col-prev { padding: 16px; }
+  #mentefacto-app .mf-avisos { padding: 12px 16px 0; }
+  #mentefacto-app .mf-rail-t { display: none; }
+  #mentefacto-app .mf-rail-i button { padding: 6px; }
+  #mentefacto-app .mf-rub { flex-direction: column; align-items: stretch; gap: 14px; }
+  #mentefacto-app .mf-rub-total { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  #mentefacto-app .mf-rub-total b { font-size: 24px; }
+  #mentefacto-app .mf-exp-fila { grid-template-columns: 1fr; }
+  #mentefacto-app .mf-nav .mf-btn { flex: 1 1 auto; }
+}
+
+/* ==========================================================================
+   13. IMPRESION DE LA PAGINA (distinto del PDF, que usa su propio iframe)
+   ========================================================================== */
+
+@media print {
+  #mentefacto-app .mf-head,
+  #mentefacto-app .mf-rail,
+  #mentefacto-app .mf-col-edit,
+  #mentefacto-app .mf-prev-barra,
+  #mentefacto-app .mf-exp,
+  #mentefacto-app .mf-avisos,
+  #mentefacto-app .mf-modal { display: none !important; }
+
+  #mentefacto-app .mf-shell { border: 0; background: #fff; }
+  #mentefacto-app .mf-grid { display: block; }
+  #mentefacto-app .mf-col-prev { padding: 0; position: static; }
+  #mentefacto-app .mf-lienzo { border: 0; box-shadow: none; padding: 0; }
+  #mentefacto-app .mf-svg-caja svg { min-width: 0; }
+}
