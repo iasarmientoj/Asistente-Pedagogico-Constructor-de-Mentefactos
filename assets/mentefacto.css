@@ -753,13 +753,13 @@
    ========================================================================== */
 
 #mentefacto-app .mf-avisos:empty { display: none; }
+/* Van en lo mas alto de la herramienta, por encima del titulo: estos mensajes
+   salen al cargar o al ejecutar una accion, y ahi es donde el usuario esta
+   mirando. No se autodestruyen: se cierran con la X. */
 #mentefacto-app .mf-avisos {
-  position: sticky;
-  bottom: 0;
-  z-index: 30;
-  padding: 12px 22px;
-  background: var(--mf-bg);
-  border-top: 1px solid var(--mf-linea);
+  padding: 14px 22px;
+  background: var(--mf-hueso);
+  border-bottom: 1px solid var(--mf-linea);
 }
 #mentefacto-app .mf-flash {
   display: flex;

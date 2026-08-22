@@ -107,14 +107,16 @@
     },
     entrevista: {
       nom: 'Entrevista',
-      desc: 'Un caso corto y fácil de leer para entender la estructura.',
+      desc: 'El ejemplo de la Figura 2 del blog del semillero.',
+      /* Contenido tomado de la Figura 2 publicada. La infraordinacion original
+         lista diez subclases; aqui van seis, que es el maximo por cuadrante. */
       datos: {
         titulo: 'Mentefacto: entrevista', autor: '',
         concepto: 'Entrevista',
-        supra: 'Técnica de recolección de información',
-        iso: ['Interacción verbal', 'Objetivo definido', 'Roles diferenciados', 'Guión flexible'],
-        excl: ['Observación', 'Cuestionario', 'Test psicométrico', 'Grupo focal'],
-        infra: ['Estructurada', 'Semiestructurada', 'No estructurada', 'Clínica']
+        supra: 'Instrumentos psicológicos',
+        iso: ['Entrevistador-entrevistado', 'Diálogo guiado', 'Recolección datos cualitativos', 'Datos verbales'],
+        excl: ['Encuesta', 'Prueba', 'Inventario', 'Protocolo de observación'],
+        infra: ['Etnográfica', 'Focalizada', 'Episódica', 'Semiestructurada', 'Narrativa', 'Grupal']
       }
     },
     actitud: {
@@ -238,9 +240,18 @@
      4. VALIDADOR PEDAGOGICO
      ========================================================================== */
 
-  function avisosItem(t) {
+  function avisosItem(t, campo) {
     var a = [], p = palabras(t);
     if (!p.length) return a;
+
+    /* Regla del blog: la exclusion son «otros conceptos PERTENECIENTES a la
+       clase o categoria superior», no la clase misma. Es el error clasico. */
+    if (campo === 'excl' && S.supra.trim() && norm(t) === norm(S.supra)) {
+      a.push('No repitas la clase superior: aquí van los conceptos hermanos, no la clase que los contiene.');
+    }
+    if (campo && campo !== 'concepto' && S.concepto.trim() && norm(t) === norm(S.concepto)) {
+      a.push('No repitas el concepto central: cada cuadrante aporta información nueva.');
+    }
     if (p.length > 5) a.push('No escribas frases: redúcelo a palabras clave.');
     if (PREPOS.indexOf(norm(p[0])) >= 0) a.push('No inicies con «' + p[0] + '»: quita artículos y preposiciones.');
     if (/[.;,:]$/.test(t.trim())) a.push('No uses signos de puntuación al final.');
@@ -298,6 +309,30 @@
 
     if (con && palabras(con).length > 4) { per -= 10; sug.push(['pertinencia', 'El concepto central es demasiado largo. Debe ser una sola idea.']); }
     if (con && sup && norm(sup) === norm(con)) { per -= 15; sug.push(['pertinencia', 'La supraordinada no puede ser el mismo concepto central.']); }
+    /* «tome únicamente la información más relevante y precisa para evitar
+       ambigüedades» (blog). Un mismo término en dos cuadrantes es justo esa
+       ambigüedad: cada cuadrante responde a una pregunta distinta. */
+    var mapa = {};
+    [['iso', iso], ['excl', exc], ['infra', inf]].forEach(function (par) {
+      par[1].forEach(function (t) {
+        var k = norm(t);
+        if (!mapa[k]) mapa[k] = [];
+        if (mapa[k].indexOf(par[0]) < 0) mapa[k].push(par[0]);
+      });
+    });
+    var cruzados = Object.keys(mapa).filter(function (k) { return mapa[k].length > 1; });
+    if (cruzados.length) {
+      per -= cruzados.length * 10;
+      sug.push(['pertinencia', cruzados.length + ' elemento(s) se repiten en dos cuadrantes distintos. Cada cuadrante responde a una pregunta diferente.']);
+    }
+
+    /* La exclusión son los miembros de la clase superior, nunca la clase. */
+    var exclEsSupra = sup ? exc.filter(function (t) { return norm(t) === norm(sup); }).length : 0;
+    if (exclEsSupra) {
+      per -= 12;
+      sug.push(['pertinencia', 'La exclusión repite la clase superior. Deben ser los conceptos hermanos que pertenecen a esa clase, no la clase misma.']);
+    }
+
     if (largos) sug.push(['pertinencia', largos + ' elemento(s) están escritos como frase. Redúcelos a palabras clave.']);
     if (arts) sug.push(['pertinencia', arts + ' elemento(s) empiezan con artículo o preposición. Elimínalos.']);
     if (dups) sug.push(['pertinencia', 'Hay ' + dups + ' elemento(s) repetidos dentro de un mismo cuadrante.']);
@@ -692,6 +727,7 @@
   function plantillaApp() {
     return '' +
       '<div class="mf-shell">' +
+      '  <div class="mf-avisos" id="mf-avisos"></div>' +
       '  <header class="mf-tope">' +
       '    <div class="mf-tope-rejilla" aria-hidden="true"></div>' +
       '    <div class="mf-tope-fila">' +
@@ -742,7 +778,6 @@
       '      </div>' +
       '    </section>' +
       '  </div>' +
-      '  <div class="mf-avisos" id="mf-avisos"></div>' +
       '  <input type="file" id="mf-file" accept=".json,application/json" class="mf-oculto">' +
       '  <div class="mf-lupa mf-oculto" id="mf-lupa">' +
       '    <div class="mf-lupa-barra">' +
@@ -814,7 +849,7 @@
   function htmlLista(p) {
     var vals = S[p.id];
     var filas = vals.map(function (v, i) {
-      var av = avisosItem(v);
+      var av = avisosItem(v, p.id);
       return '<div class="mf-item" data-i="' + i + '">' +
         '<span class="mf-item-n">' + (i + 1) + '</span>' +
         '<div class="mf-item-c">' +
@@ -889,7 +924,7 @@
     if (p.tipo === 'revision') {
       cuerpo = htmlRevision();
     } else if (p.tipo === 'uno') {
-      var av = p.id === 'concepto' ? avisosConcepto(S[p.id]) : avisosItem(S[p.id]);
+      var av = p.id === 'concepto' ? avisosConcepto(S[p.id]) : avisosItem(S[p.id], p.id);
       cuerpo = '<div class="mf-campo">' +
         '<input type="text" class="mf-input mf-input-gr" data-campo="' + p.id + '" value="' + esc(S[p.id]) +
         '" placeholder="' + esc(p.ph) + '" autocomplete="off">' +
@@ -950,14 +985,14 @@
 
     if (p.tipo === 'uno') {
       var cont = $('.mf-item-av', panel);
-      var av = p.id === 'concepto' ? avisosConcepto(S[p.id]) : avisosItem(S[p.id]);
+      var av = p.id === 'concepto' ? avisosConcepto(S[p.id]) : avisosItem(S[p.id], p.id);
       if (cont) cont.innerHTML = av.map(function (a) { return '<span class="mf-av">' + esc(a) + '</span>'; }).join('');
     } else {
       $$('.mf-item', panel).forEach(function (fila) {
         var i = parseInt(fila.getAttribute('data-i'), 10);
         var cont2 = $('.mf-item-av', fila);
         if (!cont2) return;
-        cont2.innerHTML = avisosItem(S[p.id][i] || '').map(function (a) { return '<span class="mf-av">' + esc(a) + '</span>'; }).join('');
+        cont2.innerHTML = avisosItem(S[p.id][i] || '', p.id).map(function (a) { return '<span class="mf-av">' + esc(a) + '</span>'; }).join('');
       });
       var pie = $('.mf-lista-pie', panel);
       if (pie) {
