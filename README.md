@@ -17,6 +17,7 @@ es un lienzo de dibujo, es un **asistente guiado**:
 
 | | |
 |---|---|
+| **Pantalla de bienvenida** | La herramienta abre con una portada de fondo plano y rejilla de puntos, y un solo botón. Va dentro del propio componente, no en la página que lo contiene, así que el shortcode de WordPress también la trae. |
 | **Asistente por pasos** | Una pregunta por operación intelectual, tomada literalmente de la guía del blog. El usuario nunca mueve una caja. |
 | **Recordatorio de exclusión** | En el paso 4 se le muestra **la supraordinada que él mismo escribió**. Es donde todo el mundo se equivoca: confunde «lo contrario» con «los hermanos». |
 | **Validador pedagógico** | Avisos suaves en tiempo real: frases en vez de palabras clave, artículos y preposiciones iniciales, puntuación, duplicados, elementos que repiten el concepto central. |
@@ -136,20 +137,15 @@ Recomendado: **página propia**, no dentro del post actual del blog.
 [mentefacto_siepsi]
 ```
 
-Atributos disponibles:
+Único atributo disponible:
 
 | Atributo | Valores | Para qué |
 |---|---|---|
 | `tema` | `siepsi` · `clasico` · `contraste` | Color inicial del diagrama. `clasico` usa la paleta verde azulada de la plantilla PDF actual. |
-| `titulo` | `si` (por defecto) · `no` | Con `no` se oculta el título que la herramienta lleva dentro. Úsalo si la página de WordPress ya trae su propio titular, para no repetirlo. |
 
-Es decir, si la página lleva su propio H1 puesto con WPBakery, lo correcto es:
-
-```
-[mentefacto_siepsi titulo="no"]
-```
-
-La barra oscura se reduce entonces a una fila con los tres botones de acción.
+**No pongas un titular encima del shortcode.** La herramienta arranca con su
+propia pantalla de bienvenida, que ya lleva el título, la descripción y el
+crédito del semillero. Si la página añade otro titular, se duplica.
 
 ### 4. Enlazar las dos páginas
 
@@ -180,7 +176,8 @@ simplemente no hace nada. Cero cambios de código entre las dos versiones.
 
 | Evento | Cuándo se dispara | Parámetros |
 |---|---|---|
-| `mf_cargado` | La herramienta termina de montarse | `version` |
+| `mf_cargado` | La herramienta termina de montarse (pantalla de bienvenida) | `version` |
+| `mf_iniciar` | Pulsa el botón de la bienvenida y entra al asistente | `borrador` (1 si retomaba algo) |
 | `mf_inicio` | El usuario escribe el concepto central (3+ caracteres) | — |
 | `mf_paso` | Al salir de cada paso hacia el siguiente | `paso` (1–5), `cuadrante`, `n_items` |
 | `mf_completo` | Los cuatro cuadrantes tienen contenido | `total_items` |

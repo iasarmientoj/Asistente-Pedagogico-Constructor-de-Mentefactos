@@ -10,29 +10,31 @@
   <meta name="robots" content="noindex">
 
   <!-- Raleway (menú) y Lato (cuerpo) son las tipografías reales de siepsi.com.co.
-     En WordPress ya vienen cargadas por el tema, así que allá esta etiqueta
-     no existe. Aquí se pide solo para que la demo se vea idéntica al sitio. -->
+       En WordPress ya vienen cargadas por el tema, así que allá esta etiqueta
+       no existe. Aquí se pide solo para que la demo se vea idéntica al sitio. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Raleway:wght@400;600;700&display=swap">
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Raleway:wght@300;400;600;700&display=swap">
 
   <link rel="stylesheet" href="assets/mentefacto.css">
   <link rel="icon"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2309364d'/%3E%3Crect x='11' y='5' width='10' height='5' fill='%237ac142'/%3E%3Crect x='9' y='13.5' width='14' height='5' fill='%23fff'/%3E%3Crect x='11' y='22' width='10' height='5' fill='%237ac142'/%3E%3C/svg%3E">
 
   <!--
-  CÁSCARA DE LA DEMO PARA GITHUB PAGES
+    CÁSCARA DE LA DEMO PARA GITHUB PAGES
 
-  La cabecera de abajo es una réplica de la de siepsi.com.co, con los valores
-  medidos del sitio real: fondo #09364D y menú en Raleway de 12 px en
-  mayúsculas con padding 0 17px. El logo va al doble del tamaño del original
-  (210 px en vez de 105), por eso la barra es algo más alta.
+    Solo cabecera y pie. La cabecera replica la de siepsi.com.co con los valores
+    medidos del sitio real: fondo #09364D y menú en Raleway de 12 px en
+    mayúsculas con padding 0 17px. El logo va al doble del original (210 px).
 
-  Todo lo de este <style> usa el prefijo .sp- y pertenece SOLO a esta demo.
-  El día que la herramienta se monte en WordPress, esta cáscara desaparece:
-  la cabecera la pone el tema y el <div> lo pone el shortcode.
--->
+    Todo lo de este <style> usa el prefijo .sp- y pertenece SOLO a esta demo.
+    El día que la herramienta se monte en WordPress esta cáscara desaparece: la
+    cabecera y el pie los pone el tema, y el <div> lo pone el shortcode.
+
+    OJO: la pantalla de bienvenida NO está aquí, está dentro de la herramienta
+    (assets/mentefacto.js y .css). Así el shortcode también la trae.
+  -->
   <style>
     *,
     *::before,
@@ -44,9 +46,15 @@
       -webkit-text-size-adjust: 100%;
     }
 
+    /* Columna a pantalla completa: si el contenido no llena el alto de la
+       ventana, .sp-app se estira y el pie queda pegado abajo en vez de
+       flotar a media pantalla. */
     body {
       margin: 0;
-      background: #eef2f4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #faf9f6;
       color: #1d2b32;
       font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       line-height: 1.55;
@@ -55,6 +63,7 @@
     /* --- Cabecera: réplica de la de siepsi.com.co --------------------------- */
     .sp-top {
       background: #09364d;
+      flex: 0 0 auto;
     }
 
     .sp-top-in {
@@ -104,60 +113,28 @@
       color: #7ac142;
     }
 
-    .sp-burger {
-      display: none;
-    }
-
-    /* --- Cuerpo ------------------------------------------------------------- */
-    .sp-intro {
-      max-width: 1240px;
-      margin: 30px auto 20px;
-      padding: 0 20px;
-    }
-
-    .sp-eyebrow {
-      font-family: "Raleway", Arial, sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-      color: #5c9a2e;
-      margin: 0 0 6px;
-    }
-
-    .sp-intro h1 {
-      font-family: "Raleway", Arial, sans-serif;
-      margin: 0 0 10px;
-      font-size: 30px;
-      line-height: 1.2;
-      color: #09364d;
-      font-weight: 700;
-    }
-
-    .sp-intro p {
-      margin: 0;
-      color: #5b6b73;
-      font-size: 15.5px;
-    }
-
+    /* --- Contenido ---------------------------------------------------------- */
     .sp-app {
+      width: 100%;
       max-width: 1240px;
       margin: 0 auto;
-      padding: 0 20px 40px;
+      padding: 36px 20px 48px;
+      flex: 1 0 auto;
     }
 
-    /* --- Pie ---------------------------------------------------------------- */
+    /* --- Pie: negro y sin borde superior ------------------------------------ */
     .sp-pie {
-      border-top: 3px solid #7ac142;
-      background: #09364d;
+      background: #000;
+      flex: 0 0 auto;
+      margin-top: auto;
     }
 
     .sp-pie-in {
       max-width: 1170px;
       margin: 0 auto;
-      padding: 24px 20px 30px;
+      padding: 26px 20px 32px;
       font-size: 13px;
-      color: #a8c4d0;
+      color: #9aa4a8;
       display: flex;
       gap: 16px;
       flex-wrap: wrap;
@@ -167,7 +144,7 @@
     .sp-pie a {
       color: #fff;
       text-decoration: none;
-      border-bottom: 1px solid rgba(255, 255, 255, .35);
+      border-bottom: 1px solid rgba(255, 255, 255, .3);
     }
 
     .sp-pie a:hover {
@@ -191,12 +168,8 @@
     }
 
     @media (max-width: 620px) {
-      .sp-intro h1 {
-        font-size: 23px;
-      }
-
-      .sp-intro {
-        margin: 22px auto 16px;
+      .sp-app {
+        padding: 22px 16px 34px;
       }
     }
   </style>
@@ -220,19 +193,9 @@
     </div>
   </header>
 
-  <section class="sp-intro">
-    <p class="sp-eyebrow">Recursos educativos</p>
-    <h1>Asistente Pedagógico — Constructor de Mentefactos</h1>
-    <p>
-      Responde cuatro preguntas y el mentefacto se dibuja solo, siempre con la estructura correcta.
-      Al final recibes una revisión según la rúbrica del semillero y puedes descargarlo en PNG o PDF.
-      Todo ocurre en tu navegador: no se envía ningún dato a ningún servidor.
-    </p>
-  </section>
-
   <main class="sp-app">
     <!-- ÚNICO punto de anclaje de la herramienta.
-       En WordPress este mismo div lo genera el shortcode [mentefacto_siepsi]. -->
+         En WordPress este mismo div lo genera el shortcode [mentefacto_siepsi]. -->
     <div id="mentefacto-app" data-tema="siepsi"></div>
   </main>
 

@@ -82,13 +82,12 @@ add_action( 'wp_enqueue_scripts', 'siepsi_mf_registrar_assets' );
  * Shortcode [mentefacto_siepsi]
  *
  * Atributos:
- *   tema   = siepsi | clasico | contraste   (color inicial del diagrama)
- *   titulo = si | no                        (mostrar el titulo dentro de la
- *                                            herramienta; ponlo en "no" si la
- *                                            pagina de WordPress ya trae su
- *                                            propio titulo, para no repetirlo)
+ *   tema = siepsi | clasico | contraste   (color inicial del diagrama)
  *
- * Ejemplo: [mentefacto_siepsi tema="clasico" titulo="no"]
+ * Ejemplo: [mentefacto_siepsi tema="clasico"]
+ *
+ * La herramienta trae su propia pantalla de bienvenida con el titulo, asi que
+ * la pagina de WordPress NO debe llevar otro titular encima: se duplicaria.
  *
  * @param array $atts Atributos del shortcode.
  * @return string HTML del contenedor.
@@ -100,10 +99,7 @@ function siepsi_mf_shortcode( $atts ) {
 	static $ya_renderizado = false;
 
 	$atts = shortcode_atts(
-		array(
-			'tema'   => 'siepsi',
-			'titulo' => 'si',
-		),
+		array( 'tema' => 'siepsi' ),
 		$atts,
 		'mentefacto_siepsi'
 	);
@@ -124,9 +120,7 @@ function siepsi_mf_shortcode( $atts ) {
 	wp_enqueue_style( 'siepsi-mentefacto' );
 	wp_enqueue_script( 'siepsi-mentefacto' );
 
-	$titulo = ( 'no' === strtolower( trim( $atts['titulo'] ) ) ) ? 'no' : 'si';
-
-	return '<div id="mentefacto-app" data-tema="' . esc_attr( $tema ) . '" data-titulo="' . esc_attr( $titulo ) . '"></div>';
+	return '<div id="mentefacto-app" data-tema="' . esc_attr( $tema ) . '"></div>';
 }
 add_shortcode( 'mentefacto_siepsi', 'siepsi_mf_shortcode' );
 

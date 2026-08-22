@@ -192,12 +192,12 @@
   var pasoActual = 0;
   var yaContado = {};       /* eventos de GA que solo se disparan una vez */
   var raiz = null;
-  var conTitulo = true;   /* data-titulo="no" lo oculta: util cuando la pagina
-                             que la contiene ya trae su propio titulo */
+  var vista = 'bienvenida';   /* 'bienvenida' | 'app' */
+  var avisoPendiente = null;  /* mensajes que se muestran al entrar a la app */
   var ultimoSVG = { W: 900, H: 600, txt: '' };
 
   function guardar() {
-    try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) {}
+    try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { }
   }
 
   function recuperar() {
@@ -661,17 +661,43 @@
      7. INTERFAZ
      ========================================================================== */
 
-  function plantilla() {
+  /* Pantalla de bienvenida. Va dentro de la herramienta y no en la cascara de
+     la demo, para que el shortcode de WordPress tambien la traiga. */
+  function plantillaBienvenida() {
+    var hayBorrador = hayContenido();
+    return '' +
+      '<div class="mf-bienvenida">' +
+      '  <div class="mf-bv-rejilla" aria-hidden="true"></div>' +
+      '  <div class="mf-bv-cont">' +
+      '    <p class="mf-bv-et">Recursos educativos</p>' +
+      '    <h2 class="mf-bv-titulo">Mentefacto</h2>' +
+      '    <div class="mf-bv-texto">' +
+      '      <p class="mf-bv-l1">Asistente pedagógico para construir mentefactos conceptuales.</p>' +
+      '      <p class="mf-bv-l2">Responde las preguntas y el mentefacto se construye solo, con la estructura correcta. Al terminar, la propia herramienta lo revisa con los criterios de la rúbrica del semillero y lo descargas en PNG o PDF.</p>' +
+      '      <p class="mf-bv-nota">Herramienta de aprendizaje: cubre la estructura esencial del mentefacto, para que entiendas cómo funciona y lo construyas bien. Para diagramas más elaborados o de otro tipo, usa un editor gráfico.</p>' +
+      '      <p class="mf-bv-l3">Semillero de Investigación SIEPSI</p>' +
+      '    </div>' +
+      '    <div class="mf-bv-pie">' +
+      '      <button type="button" class="mf-entrar" data-act="iniciar">' +
+      '        <span>' + (hayBorrador ? 'Continuar mi mentefacto' : 'Iniciar mentefacto') + '</span>' +
+      '        <svg class="mf-flecha" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+      '          <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>' +
+      '        </svg>' +
+      '      </button>' +
+      '    </div>' +
+      '  </div>' +
+      '</div>';
+  }
+
+  function plantillaApp() {
     return '' +
       '<div class="mf-shell">' +
-      '  <header class="mf-head' + (conTitulo ? '' : ' mf-head-solo') + '">' +
-      (conTitulo
-        ? '    <div>' +
-          '      <h2 class="mf-h-tit">Asistente Pedagógico</h2>' +
-          '      <p class="mf-h-nom">Constructor de Mentefactos</p>' +
-          '      <p class="mf-h-sub">Semillero de Investigación SIEPSI</p>' +
-          '    </div>'
-        : '') +
+      '  <header class="mf-head">' +
+      '    <div>' +
+      '      <h2 class="mf-h-tit">Asistente Pedagógico</h2>' +
+      '      <p class="mf-h-nom">Constructor de Mentefactos</p>' +
+      '      <p class="mf-h-sub">Semillero de Investigación SIEPSI</p>' +
+      '    </div>' +
       '    <div class="mf-h-acc">' +
       '      <button type="button" class="mf-btn mf-btn-fant" data-act="ejemplos">Ver un ejemplo</button>' +
       '      <button type="button" class="mf-btn mf-btn-fant" data-act="abrir">Abrir archivo</button>' +
@@ -860,9 +886,9 @@
     if (p.id === 'excl') {
       recordatorio = S.supra.trim()
         ? '<div class="mf-record"><span class="mf-record-et">Tu clase superior</span><b>' + esc(S.supra.trim()) + '</b>' +
-          '<p>Todo lo que escribas aquí debe pertenecer a esta clase, igual que ' + esc(S.concepto.trim() || 'tu concepto') + '.</p></div>'
+        '<p>Todo lo que escribas aquí debe pertenecer a esta clase, igual que ' + esc(S.concepto.trim() || 'tu concepto') + '.</p></div>'
         : '<div class="mf-record mf-record-warn"><b>Aún no definiste la supraordinación.</b>' +
-          '<p>Sin ella no puedes saber cuáles son los conceptos hermanos. <button type="button" class="mf-enlace" data-ir="1">Volver al paso 2</button></p></div>';
+        '<p>Sin ella no puedes saber cuáles son los conceptos hermanos. <button type="button" class="mf-enlace" data-ir="1">Volver al paso 2</button></p></div>';
     }
     if (p.id === 'infra' && S.concepto.trim()) {
       recordatorio = '<div class="mf-record"><span class="mf-record-et">Comprobación</span>' +
@@ -1097,6 +1123,12 @@
       if (ej) { cargarEjemplo(ej); return; }
 
       switch (b.getAttribute('data-act')) {
+        case 'iniciar':
+          var conBorrador = hayContenido();
+          vista = 'app';
+          render();
+          track('mf_iniciar', { borrador: conBorrador ? 1 : 0 });
+          break;
         case 'atras': irAPaso(pasoActual - 1); break;
         case 'siguiente': irAPaso(pasoActual + 1); break;
         case 'ejemplos': modalEjemplos(); break;
@@ -1119,6 +1151,19 @@
     });
   }
 
+  /* Unico punto que decide que pantalla se pinta. */
+  function render() {
+    if (vista === 'bienvenida') {
+      raiz.innerHTML = plantillaBienvenida();
+      return;
+    }
+    raiz.innerHTML = plantillaApp();
+    $('#mf-tema', raiz).value = S.tema;
+    renderPanel();
+    renderPreview();
+    if (avisoPendiente) { aviso(avisoPendiente); avisoPendiente = null; }
+  }
+
   /* ==========================================================================
      8. ARRANQUE
      ========================================================================== */
@@ -1130,8 +1175,6 @@
     raiz.setAttribute('data-mf-listo', '1');
 
     var temaAttr = raiz.getAttribute('data-tema');
-    conTitulo = raiz.getAttribute('data-titulo') !== 'no';
-    raiz.innerHTML = plantilla();
 
     var previo = recuperar();
     var recuperado = false;
@@ -1140,15 +1183,13 @@
       recuperado = hayContenido();
     }
     if (temaAttr && TEMAS[temaAttr] && !recuperado) S.tema = temaAttr;
-    $('#mf-tema', raiz).value = S.tema;
+    if (recuperado) {
+      avisoPendiente = 'Recuperamos el borrador que tenías guardado en este navegador. Usa «Empezar de cero» si prefieres uno nuevo.';
+    }
 
     conectar();
-    renderPanel();
-    renderPreview();
-
-    if (recuperado) {
-      aviso('Recuperamos el borrador que tenías guardado en este navegador. Usa «Empezar de cero» si prefieres uno nuevo.');
-    }
+    vista = 'bienvenida';
+    render();
     track('mf_cargado', { version: VERSION });
   }
 
