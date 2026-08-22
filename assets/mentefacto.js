@@ -241,17 +241,17 @@
   function avisosItem(t) {
     var a = [], p = palabras(t);
     if (!p.length) return a;
-    if (p.length > 5) a.push('Muy largo: usa palabras clave, no frases.');
-    if (PREPOS.indexOf(norm(p[0])) >= 0) a.push('Empieza con «' + p[0] + '»: quita artículos y preposiciones iniciales.');
-    if (/[.;,:]$/.test(t.trim())) a.push('Quita el signo de puntuación final.');
+    if (p.length > 5) a.push('No escribas frases: redúcelo a palabras clave.');
+    if (PREPOS.indexOf(norm(p[0])) >= 0) a.push('No inicies con «' + p[0] + '»: quita artículos y preposiciones.');
+    if (/[.;,:]$/.test(t.trim())) a.push('No uses signos de puntuación al final.');
     return a;
   }
 
   function avisosConcepto(t) {
     var a = [], p = palabras(t);
     if (!p.length) return a;
-    if (p.length > 4) a.push('El concepto central debería ser una sola idea, corta.');
-    if (PREPOS.indexOf(norm(p[0])) >= 0) a.push('No empieces con artículo o preposición.');
+    if (p.length > 4) a.push('No uses frases: el concepto central es una sola idea corta.');
+    if (PREPOS.indexOf(norm(p[0])) >= 0) a.push('No inicies con «' + p[0] + '»: quita artículos y preposiciones.');
     return a;
   }
 
@@ -692,32 +692,35 @@
   function plantillaApp() {
     return '' +
       '<div class="mf-shell">' +
-      '  <header class="mf-head">' +
-      '    <div>' +
-      '      <h2 class="mf-h-tit">Asistente Pedagógico</h2>' +
-      '      <p class="mf-h-nom">Constructor de Mentefactos</p>' +
-      '      <p class="mf-h-sub">Semillero de Investigación SIEPSI</p>' +
+      '  <header class="mf-tope">' +
+      '    <div class="mf-tope-rejilla" aria-hidden="true"></div>' +
+      '    <div class="mf-tope-fila">' +
+      '      <div>' +
+      '        <h2 class="mf-h-tit">Asistente pedagógico</h2>' +
+      '        <p class="mf-h-nom">Constructor de Mentefactos</p>' +
+      '      </div>' +
+      '      <div class="mf-h-acc">' +
+      '        <button type="button" class="mf-btn mf-btn-linea" data-act="ejemplos">Ver un ejemplo</button>' +
+      '        <button type="button" class="mf-btn mf-btn-linea" data-act="abrir">Abrir archivo</button>' +
+      '        <button type="button" class="mf-btn mf-btn-linea" data-act="nuevo">Empezar de cero</button>' +
+      '      </div>' +
       '    </div>' +
-      '    <div class="mf-h-acc">' +
-      '      <button type="button" class="mf-btn mf-btn-fant" data-act="ejemplos">Ver un ejemplo</button>' +
-      '      <button type="button" class="mf-btn mf-btn-fant" data-act="abrir">Abrir archivo</button>' +
-      '      <button type="button" class="mf-btn mf-btn-fant" data-act="nuevo">Empezar de cero</button>' +
-      '    </div>' +
+      '    <ol class="mf-rail" id="mf-rail"></ol>' +
       '  </header>' +
-      '  <div class="mf-avisos" id="mf-avisos"></div>' +
       '  <div class="mf-grid">' +
       '    <section class="mf-col-edit">' +
-      '      <ol class="mf-rail" id="mf-rail"></ol>' +
       '      <div class="mf-panel" id="mf-panel"></div>' +
       '      <div class="mf-nav">' +
       '        <button type="button" class="mf-btn mf-btn-sec" data-act="atras">← Atrás</button>' +
       '        <span class="mf-nav-pos" id="mf-pos"></span>' +
-      '        <button type="button" class="mf-btn mf-btn-pri" data-act="siguiente">Siguiente →</button>' +
+      '        <button type="button" class="mf-btn mf-btn-sig" data-act="siguiente">Siguiente →</button>' +
       '      </div>' +
       '    </section>' +
       '    <section class="mf-col-prev">' +
+      '      <div class="mf-prev-sticky">' +
       '      <div class="mf-prev-barra">' +
       '        <span class="mf-prev-tit">Vista previa</span>' +
+      '        <button type="button" class="mf-btn mf-btn-linea mf-btn-sm" data-act="ampliar">Ampliar</button>' +
       '        <label class="mf-tema-lbl">Color' +
       '          <select class="mf-select" id="mf-tema">' +
       Object.keys(TEMAS).map(function (k) {
@@ -736,9 +739,24 @@
       '        </div>' +
       '        <p class="mf-exp-nota">El archivo <b>Guardar avance</b> te permite retomar el mentefacto más adelante con «Abrir archivo».</p>' +
       '      </div>' +
+      '      </div>' +
       '    </section>' +
       '  </div>' +
+      '  <div class="mf-avisos" id="mf-avisos"></div>' +
       '  <input type="file" id="mf-file" accept=".json,application/json" class="mf-oculto">' +
+      '  <div class="mf-lupa mf-oculto" id="mf-lupa">' +
+      '    <div class="mf-lupa-barra">' +
+      '      <span class="mf-lupa-tit">Vista ampliada</span>' +
+      '      <div class="mf-lupa-acc">' +
+      '        <button type="button" class="mf-zbtn" data-act="zoom-menos" aria-label="Alejar">−</button>' +
+      '        <span class="mf-zpct" id="mf-zpct">100%</span>' +
+      '        <button type="button" class="mf-zbtn" data-act="zoom-mas" aria-label="Acercar">+</button>' +
+      '        <button type="button" class="mf-btn mf-btn-sec mf-btn-sm" data-act="zoom-ajustar">Ajustar</button>' +
+      '        <button type="button" class="mf-x" data-act="cerrar-lupa" aria-label="Cerrar">×</button>' +
+      '      </div>' +
+      '    </div>' +
+      '    <div class="mf-lupa-cuerpo" id="mf-lupa-cuerpo"></div>' +
+      '  </div>' +
       '  <div class="mf-modal mf-oculto" id="mf-modal"><div class="mf-modal-caja" role="dialog" aria-modal="true">' +
       '    <div class="mf-modal-cab"><h3 id="mf-modal-tit">Título</h3>' +
       '      <button type="button" class="mf-x" data-act="cerrar-modal" aria-label="Cerrar">×</button></div>' +
@@ -747,17 +765,16 @@
       '</div>';
   }
 
+  /* Los mensajes ya no se autodestruyen: aparecen al pie y se cierran a mano.
+     Desaparecer solos hacia la mitad de una lectura confundia mas que ayudaba. */
   function aviso(txt, esError) {
     var cont = $('#mf-avisos', raiz);
     if (!cont) return;
     var d = document.createElement('div');
     d.className = 'mf-flash' + (esError ? ' mf-flash-err' : '');
-    d.innerHTML = txt;
+    d.innerHTML = '<span class="mf-flash-txt">' + txt + '</span>' +
+      '<button type="button" class="mf-flash-x" data-act="cerrar-aviso" aria-label="Cerrar aviso">×</button>';
     cont.appendChild(d);
-    setTimeout(function () {
-      d.classList.add('mf-flash-fuera');
-      setTimeout(function () { d.parentNode && d.parentNode.removeChild(d); }, 400);
-    }, 5200);
   }
 
   function textoPregunta(p) {
@@ -783,7 +800,7 @@
       if (i === pasoActual) cls += ' mf-rail-act';
       if (pasoCompleto(i) && i !== pasoActual) cls += ' mf-rail-ok';
       return '<li class="' + cls + '"><button type="button" data-ir="' + i + '">' +
-        '<span class="mf-rail-n">' + (pasoCompleto(i) && i !== pasoActual ? '✓' : (i + 1)) + '</span>' +
+        '<span class="mf-rail-n">' + (pasoCompleto(i) && i !== pasoActual ? '✓' : ('0' + (i + 1))) + '</span>' +
         '<span class="mf-rail-t">' + esc(p.nom) + '</span></button></li>';
     }).join('');
     var pos = $('#mf-pos', raiz);
@@ -919,7 +936,8 @@
         '<p>Empieza escribiendo el concepto central. Cada palabra que agregues se dibuja al instante.</p></div>';
       return;
     }
-    l.innerHTML = '<div class="mf-svg-caja">' + construirSVG() + '</div>';
+    l.innerHTML = '<div class="mf-svg-caja" data-act="ampliar" role="button" tabindex="0" ' +
+      'title="Pulsa para ver el mentefacto en grande">' + construirSVG() + '</div>';
   }
 
   /* Actualiza solo los avisos del paso actual, sin volver a dibujar los inputs
@@ -989,6 +1007,75 @@
     renderPanel();
     var sh = $('.mf-shell', raiz);
     if (sh && sh.getBoundingClientRect().top < -20) sh.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ---------- Vista ampliada con zoom ---------- */
+
+  var lupaZoom = 1;
+  var LUPA_MIN = 0.4, LUPA_MAX = 4;
+
+  function pintarLupa() {
+    var cuerpo = $('#mf-lupa-cuerpo', raiz);
+    if (!cuerpo) return;
+    /* El zoom se hace con el ancho del marco y no con transform: scale(), para
+       que el scroll del contenedor funcione solo y el SVG no se pixele. */
+    cuerpo.innerHTML = '<div class="mf-lupa-marco" style="width:' +
+      (lupaZoom * 100).toFixed(2) + '%">' + construirSVG() + '</div>';
+    var pct = $('#mf-zpct', raiz);
+    if (pct) pct.textContent = Math.round(lupaZoom * 100) + '%';
+  }
+
+  function zoom(paso) {
+    var z = paso === 0 ? 1 : lupaZoom * (paso > 0 ? 1.25 : 0.8);
+    lupaZoom = Math.min(LUPA_MAX, Math.max(LUPA_MIN, z));
+    var cuerpo = $('#mf-lupa-cuerpo', raiz);
+    var antesX = cuerpo ? cuerpo.scrollLeft + cuerpo.clientWidth / 2 : 0;
+    var antesW = cuerpo ? cuerpo.scrollWidth : 1;
+    pintarLupa();
+    /* mantener centrado lo que se estaba mirando */
+    if (cuerpo && antesW) {
+      cuerpo.scrollLeft = antesX * (cuerpo.scrollWidth / antesW) - cuerpo.clientWidth / 2;
+    }
+  }
+
+  function abrirLupa() {
+    if (!hayContenido()) return;
+    lupaZoom = 1;
+    pintarLupa();
+    $('#mf-lupa', raiz).classList.remove('mf-oculto');
+    var x = $('[data-act="cerrar-lupa"]', raiz);
+    if (x) x.focus();
+    track('mf_ampliar', {});
+  }
+
+  function cerrarLupa() {
+    var l = $('#mf-lupa', raiz);
+    if (l) l.classList.add('mf-oculto');
+  }
+
+  /* Arrastrar para desplazarse dentro de la vista ampliada. */
+  function conectarArrastre() {
+    var cuerpo = $('#mf-lupa-cuerpo', raiz);
+    if (!cuerpo) return;
+    var activo = false, x0 = 0, y0 = 0, sx = 0, sy = 0;
+
+    cuerpo.addEventListener('mousedown', function (ev) {
+      if (ev.button !== 0) return;
+      activo = true;
+      x0 = ev.clientX; y0 = ev.clientY;
+      sx = cuerpo.scrollLeft; sy = cuerpo.scrollTop;
+      cuerpo.classList.add('mf-arrastrando');
+      ev.preventDefault();
+    });
+    document.addEventListener('mousemove', function (ev) {
+      if (!activo) return;
+      cuerpo.scrollLeft = sx - (ev.clientX - x0);
+      cuerpo.scrollTop = sy - (ev.clientY - y0);
+    });
+    document.addEventListener('mouseup', function () {
+      activo = false;
+      cuerpo.classList.remove('mf-arrastrando');
+    });
   }
 
   /* ---------- Modales ---------- */
@@ -1070,6 +1157,12 @@
     });
 
     raiz.addEventListener('keydown', function (ev) {
+      if ((ev.key === 'Enter' || ev.key === ' ') && ev.target.classList &&
+          ev.target.classList.contains('mf-svg-caja')) {
+        ev.preventDefault();
+        abrirLupa();
+        return;
+      }
       if (ev.key === 'Enter' && ev.target.classList && ev.target.classList.contains('mf-input')) {
         ev.preventDefault();
         var p = PASOS[pasoActual];
@@ -1085,13 +1178,19 @@
         }
         if (pasoActual < PASOS.length - 1) irAPaso(pasoActual + 1);
       }
-      if (ev.key === 'Escape') cerrarModal();
+      if (ev.key === 'Escape') { cerrarModal(); cerrarLupa(); }
+      if (ev.target.closest && ev.target.closest('.mf-lupa')) {
+        if (ev.key === '+' || ev.key === '=') { ev.preventDefault(); zoom(1); }
+        if (ev.key === '-') { ev.preventDefault(); zoom(-1); }
+        if (ev.key === '0') { ev.preventDefault(); zoom(0); }
+      }
     });
 
     raiz.addEventListener('click', function (ev) {
       var b = ev.target.closest ? ev.target.closest('[data-act],[data-ir],[data-add],[data-quitar],[data-ejemplo]') : null;
       if (!b) {
         if (ev.target.id === 'mf-modal') cerrarModal();
+        if (ev.target.id === 'mf-lupa') cerrarLupa();
         return;
       }
 
@@ -1146,6 +1245,15 @@
         case 'svg': exportarSVG(); break;
         case 'json': exportarJSON(); break;
         case 'lead': track('mf_lead', { origen: 'revision' }); break;
+        case 'cerrar-aviso':
+          var caja = b.parentNode;
+          if (caja && caja.parentNode) caja.parentNode.removeChild(caja);
+          break;
+        case 'ampliar': abrirLupa(); break;
+        case 'zoom-mas': zoom(1); break;
+        case 'zoom-menos': zoom(-1); break;
+        case 'zoom-ajustar': zoom(0); break;
+        case 'cerrar-lupa': cerrarLupa(); break;
         case 'cerrar-modal': cerrarModal(); break;
       }
     });
@@ -1158,6 +1266,7 @@
       return;
     }
     raiz.innerHTML = plantillaApp();
+    conectarArrastre();
     $('#mf-tema', raiz).value = S.tema;
     renderPanel();
     renderPreview();

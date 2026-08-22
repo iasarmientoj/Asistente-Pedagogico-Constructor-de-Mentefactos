@@ -21,9 +21,10 @@
   --mf-txt: #1d2b32;
   --mf-txt-2: #5b6b73;
   --mf-txt-3: #8697a0;
-  --mf-bor: #dde5e8;
-  --mf-bor-2: #eef2f4;
-  --mf-bg: #f4f7f8;
+  --mf-bor: #e2e4de;
+  --mf-bor-2: #eef0ea;
+  --mf-linea: rgba(9, 54, 77, .14);
+  --mf-bg: #faf9f6;
   --mf-hueso: #faf9f6;   /* blanco roto de la pantalla de bienvenida */
   --mf-blanco: #ffffff;
   --mf-amb: #8a6116;
@@ -33,7 +34,7 @@
   --mf-rojo-bg: #fdecea;
   --mf-r: 0;          /* esquinas rectas: es el estilo de SIEPSI */
   --mf-r-sm: 0;
-  --mf-sombra: 0 1px 2px rgba(15, 59, 77, .05), 0 8px 24px rgba(15, 59, 77, .07);
+  --mf-sombra: 0 1px 2px rgba(9, 54, 77, .04), 0 6px 18px rgba(9, 54, 77, .05);
   --mf-fuente: "Lato", "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mf-titulos: "Raleway", "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 
@@ -118,58 +119,82 @@
    ========================================================================== */
 
 #mentefacto-app .mf-shell {
+  position: relative;
   background: var(--mf-bg);
   border: 1px solid var(--mf-bor);
   border-radius: var(--mf-r);
-  overflow: hidden;
 }
 
-#mentefacto-app .mf-head {
-  background: var(--mf-navy);
-  color: #fff;
-  padding: 18px 22px;
+/* Zona superior. Antes era una barra oscura pegada al header del sitio: dos
+   bandas oscuras seguidas competian entre si. Ahora es clara y arrastra la
+   rejilla de puntos de la bienvenida, de modo que las dos pantallas se leen
+   como una sola pieza. */
+#mentefacto-app .mf-tope {
+  position: relative;
+  overflow: hidden;
+  background: var(--mf-hueso);
+  border-bottom: 1px solid var(--mf-linea);
+  padding: 22px 22px 0;
+}
+
+#mentefacto-app .mf-tope-rejilla {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(rgba(9, 54, 77, .15) 1.2px, transparent 1.2px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+#mentefacto-app .mf-tope-fila {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  border-bottom: 3px solid var(--mf-verde);
+  margin-bottom: 22px;
 }
 
 #mentefacto-app .mf-h-tit {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .15em;
-  color: var(--mf-verde);
+  letter-spacing: .16em;
+  color: var(--mf-verde-o);
 }
 #mentefacto-app .mf-h-nom {
   font-family: var(--mf-titulos);
-  font-size: 21px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--mf-navy);
   line-height: 1.2;
-  margin-top: 3px;
+  margin-top: 2px;
 }
-#mentefacto-app .mf-h-sub { font-size: 12.5px; color: #a8c4d0; margin-top: 3px; }
-#mentefacto-app .mf-h-acc { display: flex; flex-wrap: wrap; gap: 8px; }
+#mentefacto-app .mf-h-acc { display: flex; flex-wrap: wrap; gap: 7px; }
 
 #mentefacto-app .mf-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
   gap: 0;
-  align-items: start;
+  /* sin align-items:start, para que las dos columnas se estiren a la altura de
+     la mas alta y sus fondos lleguen hasta el borde inferior */
 }
 
 #mentefacto-app .mf-col-edit {
-  padding: 20px 22px 22px;
-  border-right: 1px solid var(--mf-bor);
+  padding: 26px 22px 24px;
+  border-right: 1px solid var(--mf-linea);
+  background: #fff;
   min-width: 0;
 }
 
 #mentefacto-app .mf-col-prev {
-  padding: 20px 22px 22px;
+  padding: 26px 22px 24px;
   min-width: 0;
+}
+
+/* Lo que se queda fijo al hacer scroll es este bloque, no la columna. */
+#mentefacto-app .mf-prev-sticky {
   position: sticky;
   top: 12px;
 }
@@ -195,12 +220,39 @@
 #mentefacto-app .mf-btn:active { transform: translateY(1px); }
 #mentefacto-app .mf-btn:focus-visible { outline: 3px solid rgba(122, 193, 66, .55); outline-offset: 2px; }
 
+/* El verde deja de ser un bloque solido y vuelve a ser acento: se reserva para
+   las etiquetas, el paso completado y las barras de la rubrica. La accion
+   principal pasa al azul de la marca. */
 #mentefacto-app .mf-btn-pri {
-  background: var(--mf-verde);
-  color: #10331a;
-  border-color: var(--mf-verde-o);
+  background: var(--mf-navy);
+  color: #fff;
+  border-color: var(--mf-navy);
 }
-#mentefacto-app .mf-btn-pri:hover { background: var(--mf-verde-o); color: #fff; }
+#mentefacto-app .mf-btn-pri:hover { background: #0c4a68; border-color: #0c4a68; }
+
+/* «Siguiente»: mismo contorno con relleno que barre que el botón de la
+   bienvenida, para que las dos pantallas compartan gesto. */
+#mentefacto-app .mf-btn-sig {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  color: var(--mf-navy);
+  border: 1.5px solid var(--mf-navy);
+  padding: 11px 22px;
+}
+#mentefacto-app .mf-btn-sig::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--mf-navy);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .4s cubic-bezier(.16, 1, .3, 1);
+  z-index: -1;
+}
+#mentefacto-app .mf-btn-sig:hover { color: #fff; }
+#mentefacto-app .mf-btn-sig:hover::before { transform: scaleX(1); transform-origin: left; }
 
 #mentefacto-app .mf-btn-sec {
   background: var(--mf-blanco);
@@ -210,14 +262,14 @@
 #mentefacto-app .mf-btn-sec:hover { border-color: var(--mf-navy-2); background: #f7fbfc; }
 #mentefacto-app .mf-btn-sec:disabled { color: var(--mf-txt-3); background: var(--mf-bor-2); border-color: var(--mf-bor); }
 
-#mentefacto-app .mf-btn-fant {
-  background: rgba(255, 255, 255, .1);
-  color: #fff;
-  border-color: rgba(255, 255, 255, .3);
-  padding: 8px 13px;
-  font-size: 13px;
+#mentefacto-app .mf-btn-linea {
+  background: rgba(255, 255, 255, .72);
+  color: var(--mf-navy);
+  border-color: var(--mf-linea);
+  padding: 8px 14px;
+  font-size: 12.5px;
 }
-#mentefacto-app .mf-btn-fant:hover { background: rgba(255, 255, 255, .2); }
+#mentefacto-app .mf-btn-linea:hover { background: #fff; border-color: var(--mf-navy); }
 
 #mentefacto-app .mf-btn-sm { padding: 7px 12px; font-size: 13px; }
 #mentefacto-app .mf-btn-ancho { width: 100%; }
@@ -226,50 +278,51 @@
    4. RIEL DE PASOS
    ========================================================================== */
 
+/* Seis segmentos iguales que ocupan el ancho completo de la herramienta, no
+   solo el de la columna izquierda: asi la vista queda equilibrada y el avance
+   se lee como una barra de progreso, no como una fila de pastillas. */
 #mentefacto-app .mf-rail {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 18px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--mf-bor);
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
 }
 
 #mentefacto-app .mf-rail-i button {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 11px 6px 6px;
-  border-radius: 0;
-  color: var(--mf-txt-2);
-  font-size: 12.5px;
-  font-weight: 600;
-  border: 1px solid transparent;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 8px 16px 0;
+  border-top: 2px solid var(--mf-linea);
+  color: var(--mf-txt-3);
+  transition: border-top-color .2s ease, color .2s ease;
 }
-#mentefacto-app .mf-rail-i button:hover { background: var(--mf-bor-2); }
+#mentefacto-app .mf-rail-i button:hover { color: var(--mf-navy); }
 
 #mentefacto-app .mf-rail-n {
-  width: 22px; height: 22px;
-  border-radius: 0;
-  background: var(--mf-bor);
-  color: var(--mf-txt-2);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11.5px;
+  display: block;
+  font-family: var(--mf-titulos);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: .02em;
+}
+
+#mentefacto-app .mf-rail-t {
+  display: block;
+  margin-top: 6px;
+  font-size: 10.5px;
   font-weight: 700;
-  flex: 0 0 auto;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  line-height: 1.3;
 }
 
-#mentefacto-app .mf-rail-act button {
-  background: var(--mf-navy);
-  color: #fff;
-  border-color: var(--mf-navy);
-}
-#mentefacto-app .mf-rail-act .mf-rail-n { background: var(--mf-verde); color: #10331a; }
+#mentefacto-app .mf-rail-act button { border-top-color: var(--mf-navy); color: var(--mf-navy); }
+#mentefacto-app .mf-rail-act .mf-rail-n { font-weight: 600; }
 
-#mentefacto-app .mf-rail-ok button { color: var(--mf-verde-o); }
-#mentefacto-app .mf-rail-ok .mf-rail-n { background: var(--mf-verde-cl); color: var(--mf-verde-o); }
+#mentefacto-app .mf-rail-ok button { border-top-color: var(--mf-verde); color: var(--mf-verde-o); }
 
 /* ==========================================================================
    5. PANEL DEL PASO
@@ -284,7 +337,15 @@
   color: var(--mf-verde-o);
   margin-bottom: 5px;
 }
-#mentefacto-app .mf-paso-cab h3 { font-size: 19px; font-weight: 700; color: var(--mf-navy); letter-spacing: 0; }
+#mentefacto-app .mf-paso-cab h3 {
+  font-family: var(--mf-titulos);
+  font-size: clamp(1.5rem, 2.5vw, 1.9rem);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -.025em;
+  color: var(--mf-navy);
+  margin-top: 2px;
+}
 
 #mentefacto-app .mf-preg {
   font-size: 16.5px;
@@ -307,7 +368,13 @@
   margin-bottom: 14px;
   overflow: hidden;
 }
+/* El «?» suelto delante del texto parecia un error de codificacion. Ahora es
+   un distintivo enmarcado, y a la derecha hay una flecha que gira al abrir,
+   para que se lea como un desplegable y no como una advertencia. */
 #mentefacto-app .mf-ayuda summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
   cursor: pointer;
   padding: 9px 14px;
   font-size: 13.5px;
@@ -316,7 +383,35 @@
   list-style: none;
 }
 #mentefacto-app .mf-ayuda summary::-webkit-details-marker { display: none; }
-#mentefacto-app .mf-ayuda summary::before { content: "? "; font-weight: 700; }
+
+#mentefacto-app .mf-ayuda summary::before {
+  content: "?";
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: .7;
+}
+
+#mentefacto-app .mf-ayuda summary::after {
+  content: "";
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  opacity: .55;
+  transition: transform .2s ease;
+}
+#mentefacto-app .mf-ayuda[open] summary::after { transform: translateY(2px) rotate(-135deg); }
 #mentefacto-app .mf-ayuda[open] summary { border-bottom: 1px solid var(--mf-bor-2); }
 #mentefacto-app .mf-ayuda > div {
   padding: 11px 14px 13px;
@@ -512,8 +607,9 @@
   box-shadow: var(--mf-sombra);
   overflow: hidden;
 }
-#mentefacto-app .mf-svg-caja { overflow-x: auto; }
-#mentefacto-app .mf-svg-caja svg { min-width: 560px; }
+#mentefacto-app .mf-svg-caja { overflow-x: auto; cursor: zoom-in; }
+#mentefacto-app .mf-svg-caja:focus-visible { outline: 3px solid rgba(122, 193, 66, .55); outline-offset: 3px; }
+#mentefacto-app .mf-svg-caja svg { width: 100%; }
 
 #mentefacto-app .mf-vacio {
   padding: 54px 26px;
@@ -643,13 +739,13 @@
 }
 
 #mentefacto-app .mf-cta {
-  background: var(--mf-navy);
-  border-radius: var(--mf-r);
+  background: var(--mf-hueso);
+  border: 1px solid var(--mf-linea);
+  border-left: 3px solid var(--mf-verde);
   padding: 18px 20px;
-  color: #fff;
 }
-#mentefacto-app .mf-cta h4 { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
-#mentefacto-app .mf-cta p { font-size: 13.5px; line-height: 1.55; color: #b7d0da; margin-bottom: 13px; }
+#mentefacto-app .mf-cta h4 { font-size: 16px; font-weight: 700; color: var(--mf-navy); margin-bottom: 5px; }
+#mentefacto-app .mf-cta p { font-size: 13.5px; line-height: 1.55; color: var(--mf-txt-2); margin-bottom: 13px; }
 #mentefacto-app .mf-cta .mf-btn { text-decoration: none; }
 
 /* ==========================================================================
@@ -657,21 +753,43 @@
    ========================================================================== */
 
 #mentefacto-app .mf-avisos:empty { display: none; }
-#mentefacto-app .mf-avisos { padding: 12px 22px 0; }
+#mentefacto-app .mf-avisos {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  padding: 12px 22px;
+  background: var(--mf-bg);
+  border-top: 1px solid var(--mf-linea);
+}
 #mentefacto-app .mf-flash {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   background: #e7f2f7;
   border: 1px solid #bcd9e5;
   color: var(--mf-navy);
-  border-radius: var(--mf-r-sm);
-  padding: 10px 14px;
+  padding: 10px 10px 10px 14px;
   font-size: 13.5px;
   line-height: 1.5;
-  transition: opacity .35s ease, transform .35s ease;
+  animation: mfEntrada .35s cubic-bezier(.16, 1, .3, 1) both;
 }
+#mentefacto-app .mf-flash-txt { flex: 1 1 auto; }
 #mentefacto-app .mf-flash + .mf-flash { margin-top: 7px; }
 #mentefacto-app .mf-flash-err { background: var(--mf-rojo-bg); border-color: #f3c2bd; color: var(--mf-rojo); }
-#mentefacto-app .mf-flash-fuera { opacity: 0; transform: translateY(-6px); }
 #mentefacto-app .mf-flash a { color: inherit; font-weight: 700; }
+#mentefacto-app .mf-flash-x {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  font-size: 17px;
+  line-height: 1;
+  color: inherit;
+  opacity: .55;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+#mentefacto-app .mf-flash-x:hover { opacity: 1; background: rgba(9, 54, 77, .09); }
 
 /* ==========================================================================
    11. MODAL
@@ -737,22 +855,29 @@
    12. RESPONSIVE
    ========================================================================== */
 
+@media (max-width: 900px) {
+  #mentefacto-app .mf-rail { grid-template-columns: repeat(3, 1fr); row-gap: 14px; }
+}
+
+@media (max-width: 460px) {
+  #mentefacto-app .mf-rail { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 980px) {
   #mentefacto-app .mf-grid { grid-template-columns: minmax(0, 1fr); }
-  #mentefacto-app .mf-col-edit { border-right: 0; border-bottom: 1px solid var(--mf-bor); }
-  #mentefacto-app .mf-col-prev { position: static; }
+  #mentefacto-app .mf-col-edit { border-right: 0; border-bottom: 1px solid var(--mf-linea); }
+  #mentefacto-app .mf-prev-sticky { position: static; }
 }
 
 @media (max-width: 620px) {
   #mentefacto-app { font-size: 15px; }
-  #mentefacto-app .mf-head { padding: 15px 16px; }
+  #mentefacto-app .mf-tope { padding: 16px 16px 0; }
   #mentefacto-app .mf-h-acc { width: 100%; }
   #mentefacto-app .mf-h-acc .mf-btn { flex: 1 1 auto; }
   #mentefacto-app .mf-col-edit,
   #mentefacto-app .mf-col-prev { padding: 16px; }
   #mentefacto-app .mf-avisos { padding: 12px 16px 0; }
-  #mentefacto-app .mf-rail-t { display: none; }
-  #mentefacto-app .mf-rail-i button { padding: 6px; }
+  #mentefacto-app .mf-rail-t { font-size: 9.5px; letter-spacing: .05em; }
   #mentefacto-app .mf-rub { flex-direction: column; align-items: stretch; gap: 14px; }
   #mentefacto-app .mf-rub-total { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
   #mentefacto-app .mf-rub-total b { font-size: 24px; }
@@ -760,6 +885,86 @@
   #mentefacto-app .mf-nav .mf-btn { flex: 1 1 auto; }
 }
 
+
+/* ==========================================================================
+   13b. VISTA AMPLIADA (LUPA)
+   ========================================================================== */
+
+#mentefacto-app .mf-lupa {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 99999;
+  background: rgba(9, 54, 77, .82);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+#mentefacto-app .mf-lupa-barra {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--mf-linea);
+}
+
+#mentefacto-app .mf-lupa-tit {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--mf-txt-3);
+}
+
+#mentefacto-app .mf-lupa-acc { display: flex; align-items: center; gap: 7px; }
+
+#mentefacto-app .mf-zbtn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--mf-linea);
+  background: #fff;
+  color: var(--mf-navy);
+  font-size: 17px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+#mentefacto-app .mf-zbtn:hover { border-color: var(--mf-navy); background: var(--mf-hueso); }
+
+#mentefacto-app .mf-zpct {
+  min-width: 48px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--mf-txt-2);
+  font-variant-numeric: tabular-nums;
+}
+
+#mentefacto-app .mf-lupa-cuerpo {
+  flex: 1 1 auto;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid var(--mf-linea);
+  border-top: 0;
+  padding: 20px;
+  cursor: grab;
+}
+#mentefacto-app .mf-lupa-cuerpo.mf-arrastrando { cursor: grabbing; }
+
+#mentefacto-app .mf-lupa-marco { margin: 0 auto; }
+#mentefacto-app .mf-lupa-marco svg { width: 100%; height: auto; max-width: none; }
+
+@media (max-width: 620px) {
+  #mentefacto-app .mf-lupa { padding: 8px; }
+  #mentefacto-app .mf-lupa-cuerpo { padding: 10px; }
+  #mentefacto-app .mf-lupa-tit { display: none; }
+  #mentefacto-app .mf-lupa-acc { width: 100%; justify-content: space-between; }
+}
 
 /* ==========================================================================
    14. PANTALLA DE BIENVENIDA
@@ -947,17 +1152,19 @@
 
 @media print {
   #mentefacto-app .mf-bienvenida,
-  #mentefacto-app .mf-head,
+  #mentefacto-app .mf-tope,
   #mentefacto-app .mf-rail,
   #mentefacto-app .mf-col-edit,
   #mentefacto-app .mf-prev-barra,
   #mentefacto-app .mf-exp,
   #mentefacto-app .mf-avisos,
-  #mentefacto-app .mf-modal { display: none !important; }
+  #mentefacto-app .mf-modal,
+  #mentefacto-app .mf-lupa,
+  #mentefacto-app .mf-avisos { display: none !important; }
 
   #mentefacto-app .mf-shell { border: 0; background: #fff; }
   #mentefacto-app .mf-grid { display: block; }
   #mentefacto-app .mf-col-prev { padding: 0; position: static; }
   #mentefacto-app .mf-lienzo { border: 0; box-shadow: none; padding: 0; }
-  #mentefacto-app .mf-svg-caja svg { min-width: 0; }
+  #mentefacto-app .mf-svg-caja svg { width: 100%; }
 }
