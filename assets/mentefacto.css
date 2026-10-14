@@ -47,7 +47,10 @@
   display: block;
   width: 100%;
   max-width: 1240px;
-  margin: 0 auto;
+  /* La herramienta trae su propio aire arriba y abajo. En WordPress se pega a la
+     cabecera del tema si no lo tiene; asi se ve igual en cualquier pagina sin
+     ajustar filas ni espaciadores en el editor. */
+  margin: 40px auto 56px;
 }
 
 #mentefacto-app,
@@ -1167,4 +1170,9 @@
   #mentefacto-app .mf-col-prev { padding: 0; position: static; }
   #mentefacto-app .mf-lienzo { border: 0; box-shadow: none; padding: 0; }
   #mentefacto-app .mf-svg-caja svg { width: 100%; }
+}
+
+/* Aire vertical mas corto en pantallas pequenas. */
+@media (max-width: 620px) {
+  #mentefacto-app { margin: 24px auto 32px; }
 }

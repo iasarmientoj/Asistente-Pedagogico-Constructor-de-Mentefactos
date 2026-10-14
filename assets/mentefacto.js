@@ -15,7 +15,7 @@
      1. CONFIGURACION
      ========================================================================== */
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.0.1';
   var RAIZ_ID = 'mentefacto-app';
   var LS_KEY = 'siepsi_mentefacto_v1';
   var URL_BLOG = 'https://siepsi.com.co/herramientas-academicas/mentefacto-2/';
