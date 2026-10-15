@@ -58,7 +58,7 @@
 #mentefacto-app *::before,
 #mentefacto-app *::after { box-sizing: border-box; }
 
-#mentefacto-app h2, #mentefacto-app h3, #mentefacto-app h4,
+#mentefacto-app h1, #mentefacto-app h2, #mentefacto-app h3, #mentefacto-app h4,
 #mentefacto-app p, #mentefacto-app ul, #mentefacto-app ol,
 #mentefacto-app li, #mentefacto-app label, #mentefacto-app div,
 #mentefacto-app span, #mentefacto-app b, #mentefacto-app details,
@@ -112,7 +112,7 @@
 }
 
 /* Los titulos van en Raleway, como los del sitio; el cuerpo en Lato. */
-#mentefacto-app h2, #mentefacto-app h3, #mentefacto-app h4 { font-family: var(--mf-titulos); }
+#mentefacto-app h1, #mentefacto-app h2, #mentefacto-app h3, #mentefacto-app h4 { font-family: var(--mf-titulos); }
 
 #mentefacto-app svg { max-width: 100%; height: auto; display: block; }
 #mentefacto-app .mf-oculto { display: none !important; }

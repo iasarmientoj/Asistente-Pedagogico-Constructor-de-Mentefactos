@@ -3,7 +3,7 @@
  * Plugin Name:       Asistente Pedagógico SIEPSI - Constructor de Mentefactos
  * Plugin URI:        https://siepsi.com.co/
  * Description:       Asistente pedagógico para construir mentefactos conceptuales paso a paso, con revisión según rúbrica y descarga en PNG, PDF y SVG. Se inserta en cualquier página con el shortcode [mentefacto_siepsi].
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 5.0
  * Requires PHP:      5.6
  * Author:            Semillero de Investigación SIEPSI
@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SIEPSI_MF_VERSION', '1.0.1' );
+define( 'SIEPSI_MF_VERSION', '1.0.2' );
 define( 'SIEPSI_MF_RUTA', plugin_dir_path( __FILE__ ) );
 define( 'SIEPSI_MF_URL', plugin_dir_url( __FILE__ ) );
 

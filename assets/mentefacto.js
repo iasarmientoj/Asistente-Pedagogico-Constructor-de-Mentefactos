@@ -15,7 +15,7 @@
      1. CONFIGURACION
      ========================================================================== */
 
-  var VERSION = '1.0.1';
+  var VERSION = '1.0.2';
   var RAIZ_ID = 'mentefacto-app';
   var LS_KEY = 'siepsi_mentefacto_v1';
   var URL_BLOG = 'https://siepsi.com.co/herramientas-academicas/mentefacto-2/';
@@ -705,7 +705,7 @@
       '  <div class="mf-bv-rejilla" aria-hidden="true"></div>' +
       '  <div class="mf-bv-cont">' +
       '    <p class="mf-bv-et">Recursos educativos</p>' +
-      '    <h2 class="mf-bv-titulo">Mentefacto</h2>' +
+      '    <h1 class="mf-bv-titulo">Mentefacto</h1>' +
       '    <div class="mf-bv-texto">' +
       '      <p class="mf-bv-l1">Asistente pedagógico para construir mentefactos conceptuales.</p>' +
       '      <p class="mf-bv-l2">Responde las preguntas y el mentefacto se construye solo, con la estructura correcta. Al terminar, la propia herramienta lo revisa con los criterios de la rúbrica del semillero y lo descargas en PNG o PDF.</p>' +
